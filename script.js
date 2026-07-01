@@ -1,61 +1,119 @@
 // Saved Game
-// Version 6
+// Version 7
 
-let uploading=false;
+const SAVE_KEY=
+"subsGame";
 
-function uploadVideo(){
+let save=
+JSON.parse(
+localStorage.getItem(
+SAVE_KEY
+)
+)||{
 
-if(uploading){
+subs:0,
+power:1,
+price:50
 
-alert(
-"Đang đăng video"
+};
+
+let subs=
+save.subs;
+
+let power=
+save.power;
+
+let price=
+save.price;
+
+function saveGame(){
+
+localStorage.setItem(
+
+SAVE_KEY,
+
+JSON.stringify({
+
+subs,
+power,
+price
+
+})
+
 );
-
-return;
 
 }
 
-let file=
-document.getElementById("video")
-.files[0];
+function render(){
 
-if(!file){
+document
+.getElementById(
+"subs"
+)
+.innerHTML=
+subs;
 
-alert(
-"Chọn MP4 hoặc MOV"
-);
+document
+.getElementById(
+"power"
+)
+.textContent=
+power;
 
-return;
+document
+.getElementById(
+"price"
+)
+.textContent=
+price;
+
+// tự lưu
+saveGame();
 
 }
 
-uploading=true;
+// tải lại sau F5
+window.addEventListener(
 
-// tăng ngay khi đăng
-subs+=power;
+"load",
+
+()=>{
+
+let data=
+
+JSON.parse(
+localStorage
+.getItem(
+SAVE_KEY
+)
+);
+
+if(data){
+
+subs=
+data.subs||0;
+
+power=
+data.power||1;
+
+price=
+data.price||50;
+
+}
 
 render();
 
-let count=1;
+}
 
-let timer=
-setInterval(()=>{
+);
 
-subs+=power;
+// lưu khi thoát
+window.addEventListener(
+
+"beforeunload",
+
+saveGame
+
+);
 
 render();
-
-count++;
-
-if(count>=6){
-
-clearInterval(
-timer);
-
-uploading=false;
-
-}
-
-},2000);
-
-}
