@@ -1,5 +1,5 @@
 // Saved Game
-// Version 5
+// Version 6
 
 let uploading=false;
 
@@ -8,7 +8,7 @@ function uploadVideo(){
 if(uploading){
 
 alert(
-"Đang tăng Sub"
+"Đang đăng video"
 );
 
 return;
@@ -31,7 +31,12 @@ return;
 
 uploading=true;
 
-let tick=0;
+// tăng ngay khi đăng
+subs+=power;
+
+render();
+
+let count=1;
 
 let timer=
 setInterval(()=>{
@@ -40,19 +45,14 @@ subs+=power;
 
 render();
 
-tick++;
+count++;
 
-if(tick>=6){
+if(count>=6){
 
 clearInterval(
-timer
-);
+timer);
 
 uploading=false;
-
-alert(
-"Tăng Sub xong"
-);
 
 }
 
