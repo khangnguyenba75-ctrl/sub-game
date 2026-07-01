@@ -1,98 +1,8 @@
+// Version 4
 // Saved Game
-// Version 3
 
-let save =
-JSON.parse(
-localStorage.getItem("subsGame")
-)||{
-subs:0,
-power:1,
-price:50,
-queue:0,
-working:false
-};
-
-let subs=save.subs;
-let power=save.power;
-let price=save.price;
-
-let queue=
-save.queue||0;
-
-let working=
-save.working||false;
-
-const subUI=
-document.getElementById("subs");
-
-const powerUI=
-document.getElementById("power");
-
-const priceUI=
-document.getElementById("price");
-
-function saveGame(){
-
-localStorage.setItem(
-"subsGame",
-
-JSON.stringify({
-subs,
-power,
-price,
-queue,
-working
-})
-
-);
-
-}
-
-function render(){
-
-subUI.innerHTML=subs;
-
-powerUI.textContent=
-power;
-
-priceUI.textContent=
-price;
-
-saveGame();
-
-}
-
-setInterval(()=>{
-
-subUI.innerHTML=subs;
-
-},2000);
-
-async function processQueue(){
-
-if(working) return;
-
-working=true;
-
-while(queue>0){
-
-await new Promise(r=>
-setTimeout(r,12000)
-);
-
-subs+=power;
-
-queue--;
-
-render();
-
-}
-
-working=false;
-
-saveGame();
-
-}
+let queue=0;
+let running=false;
 
 function uploadVideo(){
 
@@ -112,76 +22,69 @@ return;
 
 queue++;
 
-render();
-
 alert(
-"Đã thêm hàng đợi: "+
-queue
+"Đã thêm "+
+queue+
+" video"
 );
 
 processQueue();
 
 }
 
-function buyPower(){
+async function processQueue(){
 
-if(subs<price){
+if(running) return;
 
-alert(
-"Thiếu Sub"
+running=true;
+
+await new Promise(r=>
+setTimeout(r,12000)
 );
 
-return;
+// tăng hết sau 12s
+let add=
+queue*
+power;
+
+queue=0;
+
+// odometer tăng 2000ms
+let start=subs;
+
+let end=
+subs+
+add;
+
+let step=
+Math.max(
+1,
+Math.ceil(
+(end-start)/10
+)
+);
+
+let timer=
+setInterval(()=>{
+
+start+=step;
+
+if(start>=end){
+
+start=end;
+
+clearInterval(
+timer
+);
 
 }
 
-subs-=price;
-
-price+=50;
-
-power+=1;
+subs=start;
 
 render();
 
-}
+},2000);
 
-async function reportBug(){
-
-if(navigator.share){
-
-await navigator.share({
-
-title:
-"Subs Game",
-
-text:
-"Phát hiện lỗi"
-
-});
-
-}else{
-
-alert(
-"navigator.share không hỗ trợ"
-);
-
-}
-
-}
-
-subUI.onclick=()=>{
-
-alert(
-"Đang chờ: "+
-queue
-);
-
-};
-
-render();
-
-if(queue>0){
-
-processQueue();
+running=false;
 
 }
