@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Subs Game</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.css">
+
+<style>
+body{
+background:#111;
+color:white;
+font-family:sans-serif;
+text-align:center;
+}
+
+.card{
+padding:15px;
+margin:10px;
+border:1px solid #555;
+}
+
+button{
+padding:10px;
+margin:5px;
+}
+
+.odometer{
+font-size:45px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Subs Game</h1>
+
+<div class="card">
+Version: 2
+</div>
+
+<div class="card">
+Sub:
+<div id="subs" class="odometer">0</div>
+
+Power:
+<span id="power">1</span>
+
+<br><br>
+
+Giá:
+<span id="price">50</span>
+Sub
+</div>
+
+<input
+id="video"
+type="file"
+accept=".mp4,.mov">
+
+<br><br>
+
+<button onclick="uploadVideo()">
+Đăng Video
+</button>
+
+<button onclick="buyPower()">
+Mua
+</button>
+
+<button onclick="reportBug()">
+Nếu thấy lỗi → Báo
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
