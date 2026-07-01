@@ -1,18 +1,26 @@
 // Saved Game
-// Version 2
+// Version 3
 
-let save=
+let save =
 JSON.parse(
 localStorage.getItem("subsGame")
 )||{
 subs:0,
 power:1,
-price:50
+price:50,
+queue:0,
+working:false
 };
 
 let subs=save.subs;
 let power=save.power;
 let price=save.price;
+
+let queue=
+save.queue||0;
+
+let working=
+save.working||false;
 
 const subUI=
 document.getElementById("subs");
@@ -23,7 +31,22 @@ document.getElementById("power");
 const priceUI=
 document.getElementById("price");
 
-subUI.innerHTML=subs;
+function saveGame(){
+
+localStorage.setItem(
+"subsGame",
+
+JSON.stringify({
+subs,
+power,
+price,
+queue,
+working
+})
+
+);
+
+}
 
 function render(){
 
@@ -35,16 +58,7 @@ power;
 priceUI.textContent=
 price;
 
-localStorage.setItem(
-"subsGame",
-
-JSON.stringify({
-subs,
-power,
-price
-})
-
-);
+saveGame();
 
 }
 
@@ -54,6 +68,32 @@ subUI.innerHTML=subs;
 
 },2000);
 
+async function processQueue(){
+
+if(working) return;
+
+working=true;
+
+while(queue>0){
+
+await new Promise(r=>
+setTimeout(r,12000)
+);
+
+subs+=power;
+
+queue--;
+
+render();
+
+}
+
+working=false;
+
+saveGame();
+
+}
+
 function uploadVideo(){
 
 let file=
@@ -61,43 +101,41 @@ document.getElementById("video")
 .files[0];
 
 if(!file){
-alert("Chọn MP4 MOV");
-return;
-}
 
 alert(
-"Đăng video thành công\nChờ 12 giây"
+"Chọn MP4 hoặc MOV"
 );
 
-setTimeout(()=>{
+return;
 
-subs+=
-power;
+}
+
+queue++;
 
 render();
 
 alert(
-"+"+
-power+
-" Sub"
+"Đã thêm hàng đợi: "+
+queue
 );
 
-},12000);
+processQueue();
 
 }
 
 function buyPower(){
 
-if(
-subs<
-price
-){
-alert("Thiếu sub");
+if(subs<price){
+
+alert(
+"Thiếu Sub"
+);
+
 return;
+
 }
 
-subs-=
-price;
+subs-=price;
 
 price+=50;
 
@@ -109,9 +147,7 @@ render();
 
 async function reportBug(){
 
-if(
-navigator.share
-){
+if(navigator.share){
 
 await navigator.share({
 
@@ -119,7 +155,7 @@ title:
 "Subs Game",
 
 text:
-"Lỗi game"
+"Phát hiện lỗi"
 
 });
 
@@ -133,4 +169,19 @@ alert(
 
 }
 
+subUI.onclick=()=>{
+
+alert(
+"Đang chờ: "+
+queue
+);
+
+};
+
 render();
+
+if(queue>0){
+
+processQueue();
+
+}
