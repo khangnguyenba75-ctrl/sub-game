@@ -1,10 +1,19 @@
-// Version 4
 // Saved Game
+// Version 5
 
-let queue=0;
-let running=false;
+let uploading=false;
 
 function uploadVideo(){
+
+if(uploading){
+
+alert(
+"Đang tăng Sub"
+);
+
+return;
+
+}
 
 let file=
 document.getElementById("video")
@@ -20,71 +29,33 @@ return;
 
 }
 
-queue++;
+uploading=true;
 
-alert(
-"Đã thêm "+
-queue+
-" video"
-);
-
-processQueue();
-
-}
-
-async function processQueue(){
-
-if(running) return;
-
-running=true;
-
-await new Promise(r=>
-setTimeout(r,12000)
-);
-
-// tăng hết sau 12s
-let add=
-queue*
-power;
-
-queue=0;
-
-// odometer tăng 2000ms
-let start=subs;
-
-let end=
-subs+
-add;
-
-let step=
-Math.max(
-1,
-Math.ceil(
-(end-start)/10
-)
-);
+let tick=0;
 
 let timer=
 setInterval(()=>{
 
-start+=step;
+subs+=power;
 
-if(start>=end){
+render();
 
-start=end;
+tick++;
+
+if(tick>=6){
 
 clearInterval(
 timer
 );
 
+uploading=false;
+
+alert(
+"Tăng Sub xong"
+);
+
 }
 
-subs=start;
-
-render();
-
 },2000);
-
-running=false;
 
 }
